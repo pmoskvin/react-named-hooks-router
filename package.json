@@ -1,25 +1,24 @@
 {
   "name": "react-named-hooks-router",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Simple react router with hooks and named routes",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
-  "dependencies": {
-    "react": "^16.10.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/react": "^16.9.5",
     "child_process": "^1.0.2",
+    "csstype": "^2.6.7",
     "fs-extra": "^8.1.0",
     "path": "^0.12.7",
     "prettier": "^1.18.2",
+    "react": "^16.10.2",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.6.4"
   },
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
   },
   "repository": {
