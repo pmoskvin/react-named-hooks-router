@@ -1,8 +1,7 @@
 import * as React from 'react';
-import {useCallback, useContext} from 'react';
-import {useState} from 'react';
-import {LinkProps, RouteParams, RouterContextType, RouterProviderType} from "./src/types";
-import {connect, getCurrentPath, getRouteByUrl, getUrlByRoute, navigateByUrl, shouldTrap, usePopState} from "./src/helper";
+import {useCallback, useContext, useState} from 'react';
+import {LinkProps, RouteParams, RouterContextType, RouterProviderType} from './types';
+import {connect, getCurrentPath, getRouteByUrl, getUrlByRoute, navigateByUrl, shouldTrap, usePopState} from './helper';
 
 export const RouterContext = React.createContext<RouterContextType>(null as any);
 
@@ -61,7 +60,7 @@ export const Link: React.FC<LinkProps> = props => {
     const {route, params = {}, ...otherProps} = props;
     const [, routes] = useRouterContext();
     const onClick = React.useCallback(
-        e => {
+        (e: React.MouseEvent<HTMLAnchorElement>) => {
             try {
                 if (props.onClick) props.onClick(e);
             } catch (ex) {

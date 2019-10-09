@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type RouteParams = {[key: string]: any};
 
 export type StoreRoute = {

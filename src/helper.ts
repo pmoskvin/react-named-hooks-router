@@ -13,7 +13,7 @@ export function toQueryString(params: any) {
     return queryString;
 }
 
-function objectValues(object) {
+function objectValues(object: {[key: string]: any}) {
     return Object.keys(object).map(key => object[key]);
 }
 
@@ -21,7 +21,7 @@ export function connect(routes: Route[]): StoreRoutes {
     const objRoutes: StoreRoutes = {};
     routes.forEach(route => {
         let pattern = route.path;
-        const keys = {};
+        const keys: {[key: string]: number} = {};
         pattern = pattern.split('/').join('\\/');
         const matches = pattern.match(/([:*]([a-z][a-z0-9_-]*))/g);
         if (matches)
@@ -47,7 +47,7 @@ export function getUrlByRoute(routes: StoreRoutes, routeName: string, params?: R
     if (!route) throw new Error(`Unknown route: '${routeName}'`);
 
     let url = route.path;
-    const queryStringParams = {};
+    const queryStringParams: RouteParams = {};
     if (params)
         Object.keys(params).forEach(paramKey => {
             const paramValue = params[paramKey];
@@ -63,7 +63,7 @@ export function getUrlByRoute(routes: StoreRoutes, routeName: string, params?: R
 
 export function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, RouteParams] | [] {
     const [urlPath, queryStrings] = url.split('?');
-    const params = {};
+    const params: RouteParams = {};
     const route = objectValues(routes).find(route => {
         const pattern = new RegExp(`^${route.pattern}$`);
         const matches = urlPath.match(pattern);
@@ -106,7 +106,7 @@ export function getCurrentPath() {
     return window.location.pathname + window.location.search || '/';
 }
 
-export function usePopState(setFn) {
+export function usePopState(setFn: (path: string) => void) {
     useEffect(() => {
         const onPopState = () => {
             setFn(getCurrentPath());
