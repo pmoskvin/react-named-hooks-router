@@ -1,6 +1,6 @@
 {
   "name": "react-named-hooks-router",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple react router with hooks and named routes",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
   },
   "repository": {
