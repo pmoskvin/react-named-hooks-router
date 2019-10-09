@@ -1,9 +1,9 @@
 {
   "name": "react-named-hooks-router",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple react router with hooks and named routes",
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "dependencies": {
     "react": "^16.10.2"
   },
