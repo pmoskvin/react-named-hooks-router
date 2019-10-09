@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useCallback, useContext, useState} from 'react';
-import {LinkProps, RouteParams, RouterContextType, RouterProviderType} from './types';
+import {LinkProps, RouteParams, RouterContextType, RouterProviderType} from './helper';
 import {connect, getCurrentPath, getRouteByUrl, getUrlByRoute, navigateByUrl, shouldTrap, usePopState} from './helper';
 
 export const RouterContext = React.createContext<RouterContextType>(null as any);

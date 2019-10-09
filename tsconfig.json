@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "./output"
+    "target": "es2020",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true
   },
-  "include": ["/*"],
-  "exclude": []
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

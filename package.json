@@ -12,10 +12,14 @@
     "child_process": "^1.0.2",
     "fs-extra": "^8.1.0",
     "path": "^0.12.7",
+    "prettier": "^1.18.2",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "compile-typescript": "tsc"
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
   },
   "repository": {
     "type": "git",
