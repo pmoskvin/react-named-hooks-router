@@ -1,0 +1,35 @@
+{
+  "name": "react-named-hooks-router",
+  "version": "1.0.0",
+  "description": "Simple react router with hooks and named routes",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "dependencies": {
+    "react": "^16.10.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "prepare-for-npm": "node scripts/prepare-for-npm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmoskvin/react-named-hooks-router.git"
+  },
+  "keywords": [
+    "react",
+    "router",
+    "routing",
+    "route",
+    "ts",
+    "typescript"
+  ],
+  "author": {
+    "name": "Peter Moskvin",
+    "email": "peter.moskvin@outlook.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pmoskvin/react-named-hooks-router/issues"
+  },
+  "homepage": "https://github.com/pmoskvin/react-named-hooks-router#readme"
+}
