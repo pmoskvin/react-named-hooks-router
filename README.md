@@ -21,10 +21,12 @@ import { Router } from 'react-named-hooks-router';
 import NotFoundPage from 'components/NotFoundPage';
 import HomePage from 'components/HomePage';
 import UserPage from 'components/UserPage';
+import PhotosPage from 'components/PhotosPage';
 
 const routes = [
     {name: 'home', path: '/', page: HomePage},
-    {name: 'user', path: '/user/:id', page: UserPage}
+    {name: 'user', path: '/user/:id', page: UserPage}, // dynamic segment
+    {name: 'photos', path: /photos/*path', page: PhotosPage}, // wildcard segment
 ];
 
 ReactDOM.render(<Router routes={routes} notFoundPage={<NotFoundPage />} />, document.getElementById('root'));
