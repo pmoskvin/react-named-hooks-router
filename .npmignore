@@ -1,2 +1,7 @@
-src/
-scripts/
+src
+scripts
+.idea
+.gitignore
+.travis.yml
+tsconfig.json
+package-lock.json

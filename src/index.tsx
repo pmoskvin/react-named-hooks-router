@@ -127,7 +127,7 @@ function objectValues(object: {[key: string]: any}) {
     return Object.keys(object).map(key => object[key]);
 }
 
-function connect(routes: Route[]): StoreRoutes {
+export function connect(routes: Route[]): StoreRoutes {
     const objRoutes: StoreRoutes = {};
     routes.forEach(route => {
         let pattern = route.path;
@@ -151,7 +151,7 @@ function navigateByUrl(url: string) {
     dispatchEvent(new PopStateEvent('popstate', undefined));
 }
 
-function getUrlByRoute(routes: StoreRoutes, routeName: string, params?: RouteParams): string {
+export function getUrlByRoute(routes: StoreRoutes, routeName: string, params?: RouteParams): string {
     const route = routes[routeName];
 
     if (!route) throw new Error(`Unknown route: '${routeName}'`);
@@ -161,7 +161,7 @@ function getUrlByRoute(routes: StoreRoutes, routeName: string, params?: RoutePar
     if (params)
         Object.keys(params).forEach(paramKey => {
             const paramValue = params[paramKey];
-            if (route.keys && route.keys[paramKey]) {
+            if (route.keys && route.keys[paramKey] !== undefined) {
                 url = url.replace(new RegExp(`[:*]${paramKey}`), paramValue.toString());
             } else {
                 queryStringParams[paramKey] = paramValue;
@@ -171,7 +171,7 @@ function getUrlByRoute(routes: StoreRoutes, routeName: string, params?: RoutePar
     return url + (Object.keys(queryStringParams).length ? '?' + toQueryString(queryStringParams) : '');
 }
 
-function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, RouteParams] | [] {
+export function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, RouteParams] | [] {
     const [urlPath, queryStrings] = url.split('?');
     const params: RouteParams = {};
     const route = objectValues(routes).find(route => {

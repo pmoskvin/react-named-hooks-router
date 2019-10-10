@@ -4,12 +4,14 @@
   "description": "Simple react router with hooks and named routes",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
-  "peerDependencies": {
-    "react": "^16.6.1"
-  },
   "dependencies": {},
+  "peerDependencies": {
+    "react": "^16.6.0"
+  },
   "devDependencies": {
     "@types/react": "^16.9.5",
+    "@types/mocha": "^5.2.7",
+    "@types/power-assert": "^1.5.0",
     "child_process": "^1.0.2",
     "csstype": "^2.6.7",
     "fs-extra": "^8.1.0",
@@ -17,10 +19,16 @@
     "prettier": "^1.18.2",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.6.4",
+    "ts-mocha": "^6.0.0",
+    "mocha": "^6.2.1",
+    "power-assert": "^1.6.1",
+    "react": "^16.10.2"
   },
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
+    "test": "ts-mocha -p tsconfig.test.json src/**/*.test.ts",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
   },
   "repository": {
