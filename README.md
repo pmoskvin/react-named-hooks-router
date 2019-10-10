@@ -1,4 +1,5 @@
 # react-named-hooks-router
+[![Build Status](https://travis-ci.org/pmoskvin/react-named-hooks-router.svg?branch=master)](https://travis-ci.org/pmoskvin/react-named-hooks-router)
 [![MIT License](https://img.shields.io/npm/l/react-named-hooks-router.svg)](https://github.com/pmoskvin/react-named-hooks-router/blob/master/LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/react-named-hooks-router.svg)](https://www.npmjs.com/package/react-named-hooks-router)
 [![NPM Downloads](https://img.shields.io/npm/dm/react-named-hooks-router.svg?style=flat)](https://npmcharts.com/compare/react-named-hooks-router?minimal=true)
