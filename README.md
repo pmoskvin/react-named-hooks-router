@@ -1,5 +1,8 @@
+# react-named-hooks-router
 [![MIT License](https://img.shields.io/npm/l/react-named-hooks-router.svg)](https://github.com/pmoskvin/react-named-hooks-router/blob/master/LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/react-named-hooks-router.svg)](https://www.npmjs.com/package/react-named-hooks-router)
+[![NPM Downloads](https://img.shields.io/npm/dm/react-named-hooks-router.svg?style=flat)](https://npmcharts.com/compare/react-named-hooks-router?minimal=true)
+[![Install Size](https://packagephobia.now.sh/badge?p=react-named-hooks-router)](https://packagephobia.now.sh/result?p=react-named-hooks-router)
 
 **react-named-hooks-router** is as simple react router with hooks and named routes.
 
