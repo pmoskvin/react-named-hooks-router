@@ -1,3 +1,6 @@
+[![MIT License](https://img.shields.io/npm/l/react-named-hooks-router.svg)](https://github.com/pmoskvin/react-named-hooks-router/blob/master/LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/react-named-hooks-router.svg)](https://www.npmjs.com/package/react-named-hooks-router)
+
 **react-named-hooks-router** is as simple react router with hooks and named routes.
 
 * No need to write the url, just the name of the route
