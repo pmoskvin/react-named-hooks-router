@@ -13,22 +13,19 @@ function useRouterContext() {
  */
 export const useRouter = () => {
     const context = useRouterContext();
-    if (context) {
-        const {path, routes} = context;
-        const [route, params] = getRouteByUrl(routes, path);
+    if (!context) throw new Error('Сan\'t find context. Add <Router /> to the root of the project');
 
-        const pushRoute = useCallback(
-            (routeName: string, params?: RouteParams) => {
-                navigateByUrl(getUrlByRoute(routes, routeName, params));
-            },
-            [routes],
-        );
+    const {path, routes} = context;
+    const [route, params] = getRouteByUrl(routes, path);
 
-        return {params: params || {}, route: route ? route.name : '', pushRoute};
-    }
+    const pushRoute = useCallback(
+        (routeName: string, params?: RouteParams) => {
+            navigateByUrl(getUrlByRoute(routes, routeName, params));
+        },
+        [routes],
+    );
 
-    return {params: {}, route: '', pushRoute: () => {}}
-
+    return {params: params || {}, route: route ? route.name : '', pushRoute};
 };
 
 /**
@@ -181,9 +178,8 @@ function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, RoutePara
         const pattern = new RegExp(`^${route.pattern}$`);
         const matches = urlPath.match(pattern);
         const {keys} = route;
-        // Если нашли совпадение
         if (matches) {
-            // Собираем параметры из path
+            // Params from path
             if (keys) {
                 const [, ...paramsValues] = matches;
                 paramsValues.forEach((value, index) => {
@@ -192,7 +188,7 @@ function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, RoutePara
                 });
             }
 
-            // Собираем queryStrings
+            // Params from search
             if (queryStrings)
                 queryStrings.split('&').forEach(pair => {
                     const [key, value] = pair.split('=');
