@@ -53,8 +53,8 @@ describe('connect', function () {
     });
 
     it('has correct keys', function () {
-        assert.ok(storedRoutes['home'].keys.id === storedRoutesMock.home.keys.id);
-        assert.ok(storedRoutes['test'].keys.id === storedRoutesMock.test.keys.id && storedRoutes['test'].keys.name === storedRoutesMock.test.keys.name);
+        assert.ok(storedRoutes['home'].keys && storedRoutes['home'].keys.id === storedRoutesMock.home.keys.id);
+        assert.ok(storedRoutes['test'].keys && storedRoutesMock.test.keys && storedRoutes['test'].keys.id === storedRoutesMock.test.keys.id && storedRoutes['test'].keys.name === storedRoutesMock.test.keys.name);
     });
 });
 
@@ -79,7 +79,8 @@ describe('getUrlByRoute', function () {
 
 describe('getRouteByUrl', function () {
     it('valid home', function () {
-        assert.ok(getRouteByUrl(storedRoutesMock, urlMockHomeValid)[0].name === 'home');
+        const route = getRouteByUrl(storedRoutesMock, urlMockHomeValid)[0];
+        assert.ok(route && route.name === 'home');
     });
 
     it('invalid home', function () {
@@ -87,7 +88,8 @@ describe('getRouteByUrl', function () {
     });
 
     it('valid test', function () {
-        assert.ok(getRouteByUrl(storedRoutesMock, urlMockTestValid)[0].name === 'test');
+        const route = getRouteByUrl(storedRoutesMock, urlMockTestValid)[0];
+        assert.ok(route && route.name === 'test');
     });
     it('invalid test', function () {
         assert.ok(!getRouteByUrl(storedRoutesMock, urlMockTestInValid1)[0]);
