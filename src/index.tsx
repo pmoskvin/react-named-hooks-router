@@ -8,11 +8,11 @@ function useRouterContext() {
 	return useContext(RouterContext);
 }
 
-type UseRouterType = () => {
+type UseRouterType<TRouteParams> = {
 	/**
 	 * @deprecated
 	 */
-	params: RouteParams;
+	params: RouteParams<TRouteParams>;
 	/**
 	 * @deprecated
 	 */
@@ -20,7 +20,7 @@ type UseRouterType = () => {
 	/**
 	 * Route params such as query string and dynamic segments params
 	 */
-	routeParams: RouteParams;
+	routeParams: RouteParams<TRouteParams>;
 	/**
 	 * Route name
 	 */
@@ -36,7 +36,7 @@ type UseRouterType = () => {
 /**
  * Return current route, routeParams and pushRoute function
  */
-export const useRouter: UseRouterType = () => {
+export function useRouter<TRouteParams = {}>(): UseRouterType<TRouteParams> {
 	const context = useRouterContext();
 	if (!context) throw new Error("Сan't find context. Add <Router /> to the root of the project");
 
@@ -51,13 +51,13 @@ export const useRouter: UseRouterType = () => {
 	);
 
 	return {
-		params: params || {},
-		routeParams: params || {},
+		params: params || ({} as any),
+		routeParams: params || ({} as any),
 		routeName: route ? route.name : '',
 		route: route ? route.name : '',
 		pushRoute,
 	};
-};
+}
 
 /**
  * Init routing
@@ -115,7 +115,7 @@ export const Link: React.FC<LinkProps> = props => {
 	return React.createElement('a', {...otherProps, onClick, href: getUrlByRoute(context.routes, route, params)});
 };
 
-export type RouteParams = {[key: string]: any};
+export type RouteParams<TRouteParams = {}> = {[key: string]: any} & TRouteParams;
 
 export type StoreRoute = {
 	name: string;
