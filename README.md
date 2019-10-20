@@ -37,11 +37,11 @@ UserPage.tsx
 import {useRouter, Link} from 'react-named-hooks-router';
 
 const UserPage = () => {
-    const {route, params, pushRoute} = useRouter();
+    const {routeName, routeParams, pushRoute} = useRouter<id: number>();
 
     return (
         <div>
-            <p>This is {route} {params.id}</p>
+            <p>This is {routeName} {routeParams.id}</p>
             <Link route="user" params={{id: 2}}>User 2</Link>
             <button type="button" onClick={() => pushRoute('home')}>Home Page</button>
         </div>
