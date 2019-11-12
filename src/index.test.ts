@@ -48,6 +48,7 @@ const urlMockTestInValid2 = '/test/2/';
 const urlMockTestInValid3 = '/test';
 const urlMockTestInValid4 = '/test/1/tom?a=1';
 const urlMockTestInValid5 = '/test/1/tom?a.b.r=2&a.c=1';
+const urlMockTestInValid6 = '/test/1/tom?a.0.r=2&a.1=1';
 
 describe('connect', function() {
 	const storedRoutes = connect(routesMock);
@@ -102,6 +103,12 @@ describe('getUrlByRoute', function() {
 			getUrlByRoute(storedRoutesMock, 'test', {id: 1, name: 'tom', a: {b: {r: 2}, c: 1}}) === urlMockTestInValid5,
 		);
 	});
+
+	it('valid test query string deep array', function() {
+		assert.ok(
+			getUrlByRoute(storedRoutesMock, 'test', {id: 1, name: 'tom', a: [{r: 2}, 1]}) === urlMockTestInValid6,
+		);
+	});
 });
 
 describe('getRouteByUrl', function() {
@@ -139,5 +146,10 @@ describe('getRouteByUrl', function() {
 	it('query strings deep', function() {
 		const route = getRouteByUrl(storedRoutesMock, '/user/rrr/234?a.b.c=1');
 		assert.ok(route[1] && route[1].a.b.c === '1');
+	});
+
+	it('query strings deep array', function() {
+		const route = getRouteByUrl(storedRoutesMock, '/user/rrr/234?a.0.c=1&a.1.c=3');
+		assert.ok(route[1] && route[1].a[0].c === '1');
 	});
 });

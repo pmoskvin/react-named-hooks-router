@@ -255,10 +255,16 @@ function setValueByPath(obj: {[key: string]: any}, path: string, value: any) {
 	const a = path.split('.');
 	let o = obj;
 	while (a.length - 1) {
-		const n = a.shift();
-		if (!n) continue;
-		if (!(n in o)) o[n] = {};
-		o = o[n];
+		const currentValue = a.shift();
+		if (!currentValue) continue;
+		if (!(currentValue in o)) {
+			if (parseInt(a[0], 10).toString() === a[0]) {
+				o[currentValue] = [];
+			} else {
+				o[currentValue] = {};
+			}
+		}
+		o = o[currentValue];
 	}
 	o[a[0]] = value;
 }
