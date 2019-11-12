@@ -194,11 +194,26 @@ export function getUrlByRoute(routes: StoreRoutes, routeName: string, routeParam
 			if (route.keys && route.keys[paramKey] !== undefined) {
 				url = url.replace(new RegExp(`[:*]${paramKey}`), paramValue.toString());
 			} else {
-				queryStringParams[paramKey] = paramValue;
+				createQueryStringParams(paramKey, paramValue).forEach(param => {
+					queryStringParams[param.key] = param.value;
+				});
 			}
 		});
 
 	return url + (Object.keys(queryStringParams).length ? '?' + toQueryString(queryStringParams) : '');
+}
+
+function createQueryStringParams(baseKey: string, value: any) {
+	let params: Array<{key: string; value: string}> = [];
+	if (typeof value === 'object') {
+		for (let key in value) {
+			params = [...params, ...createQueryStringParams(`${baseKey}.${key}`, value[key])];
+		}
+	} else {
+		params.push({key: baseKey, value});
+	}
+
+	return params;
 }
 
 export function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, RouteParams] | [] {
@@ -222,7 +237,7 @@ export function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, Ro
 			if (queryStrings)
 				queryStrings.split('&').forEach(pair => {
 					const [key, value] = pair.split('=');
-					params[key] = value;
+					setValueByPath(params, key, value);
 				});
 
 			return true;
@@ -234,6 +249,18 @@ export function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, Ro
 	}
 
 	return [];
+}
+
+function setValueByPath(obj: {[key: string]: any}, path: string, value: any) {
+	const a = path.split('.');
+	let o = obj;
+	while (a.length - 1) {
+		const n = a.shift();
+		if (!n) continue;
+		if (!(n in o)) o[n] = {};
+		o = o[n];
+	}
+	o[a[0]] = value;
 }
 
 function shouldTrap(e: React.MouseEvent) {
