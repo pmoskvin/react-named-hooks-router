@@ -43,6 +43,8 @@ const UserPage = () => {
         <div>
             <p>This is {routeName} {routeParams.id}</p>
             <Link route="user" params={{id: 2}}>User 2</Link>
+            /* Query string parameters as deep objects */
+            <Link route="user" params={{id: 2, user: {name: 'Bob', data: {age: 3, login: 'bob35'}}}}>User 2</Link> /* Resolve to /user/2?user.name=Bob&user.data.age=3&user.data.login=bob35  */
             <button type="button" onClick={() => pushRoute('home')}>Home Page</button>
         </div>
     );
