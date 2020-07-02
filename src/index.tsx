@@ -43,7 +43,6 @@ export function useRouter<TRouteParams = {}>(beforeUnloadProp?: BeforeUnload): U
 
 	const {path, routes, setBeforeUnload, beforeUnloads, clearBeforeUpload, setPath} = context;
 	setBeforeUnload(beforeUnloadProp);
-	usePopState(clearBeforeUpload);
 
 	const [route, params] = getRouteByUrl(routes, path);
 
@@ -54,7 +53,10 @@ export function useRouter<TRouteParams = {}>(beforeUnloadProp?: BeforeUnload): U
 					beforeUnload(resolve);
 				});
 			});
-			Promise.all(promises).then(() => navigateByUrl(getUrlByRoute(routes, routeName, routeParams), setPath));
+			Promise.all(promises).then(() => {
+				navigateByUrl(getUrlByRoute(routes, routeName, routeParams), setPath);
+				clearBeforeUpload();
+			});
 		},
 		[routes, beforeUnloads],
 	);
@@ -114,7 +116,7 @@ export const Link: React.FC<LinkProps> = props => {
 
 	if (!context) return null;
 
-	const {beforeUnloads, routes, setPath} = context;
+	const {beforeUnloads, routes, setPath, clearBeforeUpload} = context;
 
 	const onClick = React.useCallback(
 		(e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -135,7 +137,10 @@ export const Link: React.FC<LinkProps> = props => {
 						beforeUnload(resolve);
 					});
 				});
-				Promise.all(promises).then(() => navigateByUrl(href, setPath));
+				Promise.all(promises).then(() => {
+					navigateByUrl(href, setPath);
+					clearBeforeUpload()
+				});
 			}
 		},
 		[props],
@@ -305,17 +310,6 @@ function shouldTrap(e: React.MouseEvent) {
 
 function getCurrentPath() {
 	return window.location.pathname + window.location.search || '/';
-}
-
-function usePopState(setFn: (path: string) => void) {
-	useEffect(() => {
-		const onPopState = () => {
-			setFn(getCurrentPath());
-		};
-
-		window.addEventListener('popstate', onPopState);
-		return () => window.removeEventListener('popstate', onPopState);
-	}, [setFn]);
 }
 
 export default Router;
