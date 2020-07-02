@@ -37,7 +37,8 @@ UserPage.tsx
 import {useRouter, Link} from 'react-named-hooks-router';
 
 const UserPage = () => {
-    const {routeName, routeParams, pushRoute} = useRouter<{id: number}>();
+    // First parameter is onBeforeUnload
+    const {routeName, routeParams, pushRoute} = useRouter<{id: number}>(navigate => setTimeout(() => navigate(), 1000));
 
     return (
         <div>
