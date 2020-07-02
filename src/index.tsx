@@ -36,18 +36,26 @@ type UseRouterType<TRouteParams> = {
 /**
  * Return current route, routeParams and pushRoute function
  */
-export function useRouter<TRouteParams = {}>(): UseRouterType<TRouteParams> {
+export function useRouter<TRouteParams = {}>(beforeUnloadProp?: BeforeUnload): UseRouterType<TRouteParams> {
 	const context = useRouterContext();
-	if (!context) throw new Error("Сan't find context. Add <Router /> to the root of the project");
+	if (!context) throw new Error("Can't find context. Add <Router /> to the root of your project");
 
-	const {path, routes} = context;
+	const {path, routes, setBeforeUnload, beforeUnloads, clearBeforeUpload} = context;
+	setBeforeUnload(beforeUnloadProp);
+	usePopState(clearBeforeUpload);
+
 	const [route, params] = getRouteByUrl(routes, path);
 
 	const pushRoute = useCallback(
 		(routeName: string, routeParams?: RouteParams) => {
-			navigateByUrl(getUrlByRoute(routes, routeName, routeParams));
+			const promises = beforeUnloads.map(beforeUnload => {
+				return new Promise((resolve) => {
+					beforeUnload(resolve);
+				});
+			});
+			Promise.all(promises).then(() => navigateByUrl(getUrlByRoute(routes, routeName, routeParams)));
 		},
-		[routes],
+		[routes, beforeUnloads],
 	);
 
 	return {
@@ -68,6 +76,7 @@ export function useRouter<TRouteParams = {}>(): UseRouterType<TRouteParams> {
 function Router(props: RouterProviderType): any {
 	const {routes, notFoundPage} = props;
 	const [path, setPath] = useState(getCurrentPath());
+	const [beforeUnload, setBeforeUnload] = useState<BeforeUnload[]>([]);
 	usePopState(path => setPath(path));
 	const storedRoutes = connect(routes);
 
@@ -75,10 +84,20 @@ function Router(props: RouterProviderType): any {
 
 	if (!route) return notFoundPage || null;
 
+	const addBeforeUnload = useCallback(newBeforeUnload => {
+		if (newBeforeUnload) {
+			if (!beforeUnload.find(item => '' + item === '' + newBeforeUnload)) {
+				setBeforeUnload(beforeUnload => [...beforeUnload, newBeforeUnload]);
+			}
+		}
+	}, [beforeUnload]);
+
+	const clearBeforeUpload = useCallback(() => beforeUnload.length && setBeforeUnload([]), [beforeUnload]);
+
 	return React.createElement(
 		RouterContext.Provider,
 		{
-			value: {path, routes: storedRoutes},
+			value: {path, routes: storedRoutes, beforeUnloads: beforeUnload, setBeforeUnload: addBeforeUnload, clearBeforeUpload},
 		},
 		React.createElement(route.page, {}, null),
 	);
@@ -95,6 +114,8 @@ export const Link: React.FC<LinkProps> = props => {
 
 	if (!context) return null;
 
+	const {beforeUnloads, routes} = context;
+
 	const onClick = React.useCallback(
 		(e: React.MouseEvent<HTMLAnchorElement>) => {
 			try {
@@ -104,15 +125,22 @@ export const Link: React.FC<LinkProps> = props => {
 				throw ex;
 			}
 
+			const href = e.currentTarget.href;
+
 			if (shouldTrap(e)) {
 				e.preventDefault();
 
-				navigateByUrl(e.currentTarget.href);
+				const promises = beforeUnloads.map(beforeUnload => {
+					return new Promise((resolve) => {
+						beforeUnload(resolve);
+					});
+				});
+				Promise.all(promises).then(() => navigateByUrl(href));
 			}
 		},
 		[props],
 	);
-	return React.createElement('a', {...otherProps, onClick, href: getUrlByRoute(context.routes, route, params)});
+	return React.createElement('a', {...otherProps, onClick, href: getUrlByRoute(routes, route, params)});
 };
 
 export type RouteParams<TRouteParams = {}> = {[key: string]: any} & TRouteParams;
@@ -131,8 +159,8 @@ export type LinkProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'hre
 	route: string;
 	params?: RouteParams;
 };
-
-export type RouterContextType = {path: string; routes: StoreRoutes};
+type BeforeUnload = (run: (value: unknown) => void ) => void;
+export type RouterContextType = {path: string; routes: StoreRoutes, beforeUnloads: BeforeUnload[], setBeforeUnload: (value?: BeforeUnload) => void, clearBeforeUpload: () => void};
 
 export type RouterProviderType = {
 	routes: Route[];
@@ -252,7 +280,7 @@ export function getRouteByUrl(routes: StoreRoutes, url: string): [StoreRoute, Ro
 }
 
 function setValueByPath(obj: {[key: string]: any}, path: string, value: any) {
-	const a = path.split('.');
+	const a = path.split(/[^\\]\./);
 	let o = obj;
 	while (a.length - 1) {
 		const currentValue = a.shift();
@@ -266,7 +294,7 @@ function setValueByPath(obj: {[key: string]: any}, path: string, value: any) {
 		}
 		o = o[currentValue];
 	}
-	o[a[0]] = value;
+	o[a[0]] = value.replace('\\', '');
 }
 
 function shouldTrap(e: React.MouseEvent) {
