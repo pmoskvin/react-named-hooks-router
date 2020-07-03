@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {useCallback, useContext, useState, useEffect} from 'react';
-import set = Reflect.set;
+import {useCallback, useContext, useState, useEffect, useMemo} from 'react';
 export type Route = {name: string; path: string; page: React.FunctionComponent};
 
 export const RouterContext = React.createContext<RouterContextType>(null as any);
@@ -34,21 +33,28 @@ type UseRouterType<TRouteParams> = {
 	pushRoute: (routeName: string, routeParams?: RouteParams) => void;
 };
 
+let idCounter = 0;
+
 /**
  * Return current route, routeParams and pushRoute function
  */
-export function useRouter<TRouteParams = {}>(beforeUnloadProp?: BeforeUnload): UseRouterType<TRouteParams> {
+export function useRouter<TRouteParams = {}>(beforeUnload?: BeforeUnload): UseRouterType<TRouteParams> {
 	const context = useRouterContext();
 	if (!context) throw new Error("Can't find context. Add <Router /> to the root of your project");
 
-	const {path, routes, setBeforeUnload, beforeUnloads, clearBeforeUpload, setPath} = context;
-	setBeforeUnload(beforeUnloadProp);
+	const id = useMemo(() => idCounter++, []);
+
+	const {path, routes, addBeforeUnload, beforeUnloads, clearBeforeUpload, setPath} = context;
+
+	usePopState(clearBeforeUpload);
+
+	if (beforeUnload) addBeforeUnload(id, beforeUnload);
 
 	const [route, params] = getRouteByUrl(routes, path);
 
 	const pushRoute = useCallback(
 		(routeName: string, routeParams?: RouteParams) => {
-			const promises = beforeUnloads.map(beforeUnload => {
+			const promises = Object.keys(beforeUnloads).map((key) => beforeUnloads[key as any as number]).map(beforeUnload => {
 				return new Promise((resolve) => {
 					beforeUnload(resolve);
 				});
@@ -79,27 +85,27 @@ export function useRouter<TRouteParams = {}>(beforeUnloadProp?: BeforeUnload): U
 function Router(props: RouterProviderType): any {
 	const {routes, notFoundPage} = props;
 	const [path, setPath] = useState(getCurrentPath());
-	const [beforeUnload, setBeforeUnload] = useState<BeforeUnload[]>([]);
+	const [beforeUnloads, setBeforeUnloads] = useState<{[key: number]: BeforeUnload}>({});
 	const storedRoutes = connect(routes);
-
+	usePopState(path => setPath(path));
 	const [route] = getRouteByUrl(storedRoutes, path);
 
 	if (!route) return notFoundPage || null;
 
-	const addBeforeUnload = useCallback(newBeforeUnload => {
-		if (newBeforeUnload) {
-			if (!beforeUnload.find(item => '' + item === '' + newBeforeUnload)) {
-				setBeforeUnload(beforeUnload => [...beforeUnload, newBeforeUnload]);
+	const addBeforeUnload = useCallback((id, beforeUnload) => {
+		if (beforeUnload) {
+			if (beforeUnloads[id] !== beforeUnload) {
+				setBeforeUnloads({...beforeUnloads, [id]: beforeUnload});
 			}
 		}
-	}, [beforeUnload]);
+	}, [beforeUnloads]);
 
-	const clearBeforeUpload = useCallback(() => beforeUnload.length && setBeforeUnload([]), [beforeUnload]);
+	const clearBeforeUpload = useCallback(() => Object.keys(beforeUnloads).length && setBeforeUnloads({}), [beforeUnloads]);
 
 	return React.createElement(
 		RouterContext.Provider,
 		{
-			value: {path, routes: storedRoutes, beforeUnloads: beforeUnload, setPath, setBeforeUnload: addBeforeUnload, clearBeforeUpload},
+			value: {path, routes: storedRoutes, beforeUnloads, setPath, addBeforeUnload, clearBeforeUpload},
 		},
 		React.createElement(route.page, {}, null),
 	);
@@ -132,7 +138,7 @@ export const Link: React.FC<LinkProps> = props => {
 			if (shouldTrap(e)) {
 				e.preventDefault();
 
-				const promises = beforeUnloads.map(beforeUnload => {
+				const promises = Object.keys(beforeUnloads).map(key => beforeUnloads[key as any as number]).map(beforeUnload => {
 					return new Promise((resolve) => {
 						beforeUnload(resolve);
 					});
@@ -165,7 +171,7 @@ export type LinkProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'hre
 	params?: RouteParams;
 };
 type BeforeUnload = (run: (value: unknown) => void ) => void;
-export type RouterContextType = {path: string; routes: StoreRoutes, beforeUnloads: BeforeUnload[], setPath: (value: string) => void, setBeforeUnload: (value?: BeforeUnload) => void, clearBeforeUpload: () => void};
+export type RouterContextType = {path: string; routes: StoreRoutes, beforeUnloads: {[id: number]: BeforeUnload}, setPath: (value: string) => void, addBeforeUnload: (id: number, value: BeforeUnload) => void, clearBeforeUpload: () => void};
 
 export type RouterProviderType = {
 	routes: Route[];
@@ -310,6 +316,17 @@ function shouldTrap(e: React.MouseEvent) {
 
 function getCurrentPath() {
 	return window.location.pathname + window.location.search || '/';
+}
+
+function usePopState(setFn: (path: string) => void) {
+	useEffect(() => {
+		const onPopState = () => {
+			setFn(getCurrentPath());
+		};
+
+		window.addEventListener('popstate', onPopState);
+		return () => window.removeEventListener('popstate', onPopState);
+	}, [setFn]);
 }
 
 export default Router;
