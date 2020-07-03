@@ -11,6 +11,7 @@
 * No need to write the url, just the name of the route
 * At any time you can get a full description of the current route with all params
 * pushRoute method for programmatic navigation
+* beforeUnload event with resolve function
 * Full typescript support
 
 ## Usage
