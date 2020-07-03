@@ -46,6 +46,9 @@ const UserPage = () => {
             setNavigateCallback(() => navigate);
         }
     }, [test]);
+    
+    // Generic for routeParams
+    // Callback for beforeUnload effect
     const {routeName, routeParams, pushRoute} = useRouter<{id: number}>(handleBeforeUnload);
 
     return (
