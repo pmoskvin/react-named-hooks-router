@@ -38,7 +38,15 @@ import {useRouter, Link} from 'react-named-hooks-router';
 
 const UserPage = () => {
     // First parameter is onBeforeUnload
-    const {routeName, routeParams, pushRoute} = useRouter<{id: number}>(navigate => setTimeout(() => navigate(), 1000));
+    const [test, setTest] = useState(false);
+    const [navigateCallback, setNavigateCallback] = useState();
+    const handleBeforeUnload = useCallabck(navigate => {
+        if (test) navigate();
+        else {
+            setNavigateCallback(() => navigate);
+        }
+    }, [test]);
+    const {routeName, routeParams, pushRoute} = useRouter<{id: number}>(handleBeforeUnload);
 
     return (
         <div>
@@ -47,6 +55,7 @@ const UserPage = () => {
             {/* Query string parameters as deep objects */}
             <Link route="user" params={{id: 2, user: {name: 'Bob', data: {age: 3, login: 'bob35'}}}}>User 2</Link> {/* Resolve to /user/2?user.name=Bob&user.data.age=3&user.data.login=bob35 */}
             <button type="button" onClick={() => pushRoute('home')}>Home Page</button>
+            <ModalPopup open={!!setNavigateCallback}>Leave page?<br /><Button onClick={() => navigateCallback()}>Yes!</Button></ModalPopup>
         </div>
     );
 };
