@@ -90,8 +90,6 @@ function Router(props: RouterProviderType): any {
 	usePopState(path => setPath(path));
 	const [route] = getRouteByUrl(storedRoutes, path);
 
-	if (!route) return notFoundPage || null;
-
 	const addBeforeUnload = useCallback((id, beforeUnload) => {
 		if (beforeUnload) {
 			if (beforeUnloads[id] !== beforeUnload) {
@@ -101,6 +99,8 @@ function Router(props: RouterProviderType): any {
 	}, [beforeUnloads]);
 
 	const clearBeforeUpload = useCallback(() => Object.keys(beforeUnloads).length && setBeforeUnloads({}), [beforeUnloads]);
+
+	if (!route) return notFoundPage || null;
 
 	return React.createElement(
 		RouterContext.Provider,
