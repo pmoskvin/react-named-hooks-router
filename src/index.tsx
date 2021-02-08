@@ -133,6 +133,10 @@ export const Link: React.FC<LinkProps> = props => {
 				throw ex;
 			}
 
+			if (props.target && ['_blank', '_parent', '_top'].includes(props.target)) {
+				return;
+			}
+
 			const href = e.currentTarget.href;
 
 			if (shouldTrap(e)) {
