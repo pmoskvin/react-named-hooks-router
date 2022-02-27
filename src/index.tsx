@@ -310,7 +310,7 @@ function setValueByPath(obj: {[key: string]: any}, path: string, value: any) {
 		}
 		o = o[currentValue];
 	}
-	o[a[0]] = value.replace('\\', '');
+	o[a[0]] = value ? value.replace('\\', '') : value;
 }
 
 function shouldTrap(e: React.MouseEvent) {
