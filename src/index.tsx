@@ -206,7 +206,7 @@ export function connect(routes: Route[]): StoreRoutes {
 		let pattern = route.path;
 		const keys: {[key: string]: number} = {};
 		pattern = pattern.split('/').join('\\/');
-		const matches = pattern.match(/([:*]([a-z][a-z0-9_-]*))/g);
+		const matches = pattern.match(/([:*]([a-zA-Z][a-zA-Z0-9_-]*))/g);
 		if (matches)
 			matches.forEach((match, index) => {
 				pattern = pattern.replace(match, match[0] === ':' ? '([^/]+)' : '(.+?)');
