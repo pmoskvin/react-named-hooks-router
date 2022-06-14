@@ -43,9 +43,7 @@ const UserPage = () => {
     const [navigateCallback, setNavigateCallback] = useState();
     const handleBeforeUnload = useCallabck(navigate => {
         if (test) navigate();
-        else {
-            setNavigateCallback(() => navigate);
-        }
+        else setNavigateCallback(() => navigate);        
     }, [test]);
     
     // Generic for routeParams
