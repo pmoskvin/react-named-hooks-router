@@ -102,6 +102,8 @@ function Router(props: RouterProviderType): any {
 
 	if (!route) return notFoundPage || null;
 
+	if (props.onLoadPage) props.onLoadPage(route.name);
+
 	return React.createElement(
 		RouterContext.Provider,
 		{
@@ -180,6 +182,7 @@ export type RouterContextType = {path: string; routes: StoreRoutes, beforeUnload
 export type RouterProviderType = {
 	routes: Route[];
 	notFoundPage?: React.ReactNode;
+	onLoadPage?: (routeName: string) => void;
 };
 
 function toQueryString(params: any) {
