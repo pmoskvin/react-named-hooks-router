@@ -30,7 +30,11 @@ const routes = [
     {name: 'photos', path: '/photos/*path', page: PhotosPage}, // wildcard segment
 ];
 
-ReactDOM.render(<Router routes={routes} notFoundPage={<NotFoundPage />} />, document.getElementById('root'));
+const handleLoadPage = (routeName: string) => {
+    console.log(routeName + 'is loaded!');
+}
+
+ReactDOM.render(<Router routes={routes} notFoundPage={<NotFoundPage />} onLoadPage={handleLoadPage} />, document.getElementById('root'));
 ```
 
 UserPage.tsx
