@@ -31,6 +31,12 @@ type UseRouterType<TRouteParams> = {
 	 * @param params
 	 */
 	pushRoute: (routeName: string, routeParams?: RouteParams) => void;
+	/**
+	 * Callback, return url for route
+	 * @param routeName
+	 * @param params
+	 */
+	urlByRoute: (routeName: string, routeParams?: RouteParams) => string;
 };
 
 let idCounter = 0;
@@ -73,6 +79,7 @@ export function useRouter<TRouteParams = {}>(beforeUnload?: BeforeUnload): UseRo
 		routeName: route ? route.name : '',
 		route: route ? route.name : '',
 		pushRoute,
+		urlByRoute: (routeName, routeParams) => getUrlByRoute(routes, routeName, routeParams)
 	};
 }
 
