@@ -52,7 +52,9 @@ const UserPage = () => {
     
     // Generic for routeParams
     // Callback for beforeUnload effect
-    const {routeName, routeParams, pushRoute} = useRouter<{id: number}>(handleBeforeUnload);
+    const {routeName, routeParams, pushRoute, urlByRoute} = useRouter<{id: number}>(handleBeforeUnload);
+
+    console.log(urlByRoute(routeName, routeParams)); // Log path
 
     return (
         <div>
